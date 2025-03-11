@@ -1,5 +1,6 @@
 import { ChakraProvider, defaultSystem } from '@chakra-ui/react'
 import Header from './components/Header'
+import Todos from './components/Todos'
 import './App.css'
 
 function App() {
@@ -7,6 +8,7 @@ function App() {
   return (
    <ChakraProvider value={defaultSystem}>
     <Header />
+    <Todos />
    </ChakraProvider>
   )
 }

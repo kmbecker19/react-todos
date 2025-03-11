@@ -10,9 +10,9 @@ origins = [
 ]
 
 todos = [
-    {"id": 1, "item": "Buy groceries", "completed": False},
-    {"id": 2, "item": "Clean the house", "completed": True},
-    {"id": 3, "item": "Complete project", "completed": False}
+    {"id": 1, "item": "Buy groceries"},
+    {"id": 2, "item": "Clean the house"},
+    {"id": 3, "item": "Complete project"}
 ]
 
 app.add_middleware(
