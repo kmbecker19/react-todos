@@ -1,4 +1,3 @@
-import React from 'react';
 import { Heading, Flex, Separator, Button } from '@chakra-ui/react';
 
 export default function Header() {
@@ -19,7 +18,8 @@ export default function Header() {
     >
       <Flex align="center" as="nav" mr={5}>
         <Heading as="h1" size="sm">Todos</Heading>
-        <Separator />
+      </Flex>
+      <Flex align="center" as="nav">
         <Button asChild size="md">
           <a href="/">Back To Home Page</a>
         </Button>
