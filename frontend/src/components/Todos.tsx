@@ -35,13 +35,32 @@ interface TodoHelperProps {
   fetchTodos: () => void;
 }
 
-// Helper for rendering todos
-
+interface DeleteTodoProps {
+  id: string;
+  fetchTodos: () => void;
+}
 
 // Context for managing global state across components
 const TodosContext = createContext({
   todos: [], fetchTodos: () => { }
 });
+
+// Delete Todo Component
+function DeleteTodo({ id, fetchTodos }: DeleteTodoProps) {
+  const deleteTodo = async () => {
+    await fetch(`http://localhost:8000/todo/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ id: id })
+    });
+    await fetchTodos();
+  };
+  return (
+    <Button h="1.5rem" size="sm" marginLeft={2} onClick={deleteTodo}>Delete Todo</Button>
+  )
+}
 
 function UpdateTodo({ item, id, fetchTodos }: UpdateTodoProps) {
   const [todo, setTodo] = useState(item);
@@ -143,6 +162,7 @@ function TodoHelper({ item, id, fetchTodos }: TodoHelperProps) {
           {item}
           <Flex align="end">
             <UpdateTodo item={item} id={id} fetchTodos={fetchTodos} />
+            <DeleteTodo id={id} fetchTodos={fetchTodos} />
           </Flex>
         </Text>
       </Flex>
