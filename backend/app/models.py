@@ -2,7 +2,7 @@ from sqlmodel import SQLModel, Field
 from uuid import UUID, uuid4
 
 class TodoBase(SQLModel):
-    item: str | None = Field(index=True, default=None)
+    item: str | None = Field(index=True, default=None, unique=True)
 
 class Todo(TodoBase, table=True):
     id: str = Field(primary_key=True, default_factory=lambda: str(uuid4()))
