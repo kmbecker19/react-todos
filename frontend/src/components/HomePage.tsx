@@ -1,20 +1,25 @@
-import { Button, Container, Text, Flex, defaultSystem, ChakraProvider } from '@chakra-ui/react'
+import { Button, Container, Text, Flex, defaultSystem, ChakraProvider, Heading } from '@chakra-ui/react'
 import Header from './Header'
 
 function TodoButton() {
-    return (
-        <Button asChild size="xl">
-            <a href="/todo-list">Go to To-Do List</a>
-        </Button>
-    )
+  return (
+    <Button asChild size="xl">
+      <a href="/todo-list">Go to To-Do List</a>
+    </Button>
+  )
 }
 export default function HomePage() {
   return (
     <ChakraProvider value={defaultSystem}>
-        <Header />
-        <Container maxW="container.xl" pt="100px">
-            <TodoButton />
-        </Container>
+      <Header />
+      <Container maxW="container.xl" pt="100px">
+        <Flex as="nav" justify="center" margin="20">
+          <Heading as="h1" size="md">Welcome to the Home Page!</Heading>
+        </Flex>
+        <Flex justify="center" align="center" margin="20">
+          <TodoButton />
+        </Flex>
+      </Container>
     </ChakraProvider>
   )
 }
