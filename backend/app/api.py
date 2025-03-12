@@ -74,6 +74,19 @@ def create_sql_todo(session: SessionDep, todo_create: TodoCreate):
     return todo_db
 
 
+@app.put('/sql/todo/{id}', response_model=TodoPublic)
+def update_sql_todo(id: int, todo_update: TodoUpdate, session: SessionDep):
+    todo_db = session.get(Todo, id)
+    if not todo_db:
+        raise HTTPException(status_code=404, message='Todo not found')
+    todo_data = todo_update.model_dump(exclude_unset=True)
+    todo_db.sqlmodel_update(todo_data)
+    session.add(todo_db)
+    session.commit()
+    session.refresh(todo_db)
+    return todo_db
+
+
 # Local Dict routes
 @app.get('/todo', tags=['todos'])
 async def read_todos() -> dict:
