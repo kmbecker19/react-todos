@@ -28,14 +28,17 @@ app.add_middleware(
 async def read_root() -> dict:
     return {'"message": "Welcome to your todo list."'}
 
+
 @app.get('/todo', tags=['todos'])
 async def read_todos() -> dict:
     return {"data": todos}
+
 
 @app.post('/todo', tags=['todos'])
 async def create_todo(todo: dict) -> dict:
     todos.append(todo)
     return {'data': todo}
+
 
 @app.put("/todo/{id}", tags=["todos"])
 async def update_todo(id: int, body: dict) -> dict:
@@ -44,6 +47,20 @@ async def update_todo(id: int, body: dict) -> dict:
             todo["item"] = body["item"]
             return {
                 "data": f"Todo with id {id} has been updated."
+            }
+
+    return {
+        "data": f"Todo with id {id} not found."
+    }
+
+
+@app.delete("/todo/{id}", tags=["todos"])
+async def delete_todo(id: int) -> dict:
+    for todo in todos:
+        if int(todo["id"]) == id:
+            todos.remove(todo)
+            return {
+                "data": f"Todo with id {id} has been removed."
             }
 
     return {
