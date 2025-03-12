@@ -46,11 +46,6 @@ app.add_middleware(
 )
 
 
-@app.get("/", tags=["root"])
-async def read_root() -> dict:
-    return {"message": "Welcome to your todo list."}
-
-
 # SQL Server Routes
 @app.get('/sql/todo', response_model=list[TodoPublic])
 def read_sql_todos(session: SessionDep,
