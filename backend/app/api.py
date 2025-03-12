@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from sqlmodel import create_engine, Session, SQLModel, select
@@ -59,10 +59,10 @@ async def read_root() -> dict:
 
 # SQL Server Routes
 @app.get('/sql/todo', response_model=list[TodoPublic])
-def read_sql_todos(session: SessionDep):
-    todos = session.exec(select(Todo)).all()
-    if not todos:
-        raise HTTPException(status_code=404, detail='Todos not found')
+def read_sql_todos(session: SessionDep,
+                   offset: int = 0,
+                   limit: Annotated[int, Query(le=100)] = 100):
+    todos = session.exec(select(Todo).offset(offset).limit(limit)).all()
     return todos
 
 
