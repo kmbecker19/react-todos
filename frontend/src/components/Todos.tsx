@@ -48,7 +48,7 @@ const TodosContext = createContext({
 // Delete Todo Component
 function DeleteTodo({ id, fetchTodos }: DeleteTodoProps) {
   const deleteTodo = async () => {
-    await fetch(`http://localhost:8000/todo/${id}`, {
+    await fetch(`http://localhost:8000/sql/todo/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json"
@@ -65,7 +65,7 @@ function DeleteTodo({ id, fetchTodos }: DeleteTodoProps) {
 function UpdateTodo({ item, id, fetchTodos }: UpdateTodoProps) {
   const [todo, setTodo] = useState(item);
   const updateTodo = async () => {
-    await fetch(`http://localhost:8000/todo/${id}`, {
+    await fetch(`http://localhost:8000/sql/todo/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -133,7 +133,7 @@ function AddTodo() {
       "id": todos.length + 1,
       "item": item
     };
-    fetch("http://localhost:8000/todo", {
+    fetch("http://localhost:8000/sql/todo", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -174,9 +174,9 @@ function TodoHelper({ item, id, fetchTodos }: TodoHelperProps) {
 export default function Todos() {
   const [todos, setTodos] = useState([]);
   const fetchTodos = () => {
-    fetch("http://localhost:8000/todo")
+    fetch("http://localhost:8000/sql/todo")
       .then(response => response.json())
-      .then(data => setTodos(data.data))
+      .then(data => setTodos(data))
       .catch(error => console.error("Error:", error));
   };
 
