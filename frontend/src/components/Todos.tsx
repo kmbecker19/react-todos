@@ -23,10 +23,20 @@ interface Todo {
     item: string;
 }
 
+interface UpdateTodoProps {
+    item: string;
+    id: string;
+    fetchTodos: () => void;
+}
+
 // Context for managing global state across components
 const TodosContext = createContext({
     todos: [], fetchTodos: () => {}
 });
+
+function UpdateTodo({ item, id, fetchTodos }: UpdateTodoProps) {
+    const [todo, setTodo] = useState(item)
+}
 
 // Shell for adding todo
 function AddTodo() {
