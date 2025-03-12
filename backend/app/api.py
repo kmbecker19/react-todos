@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from sqlmodel import create_engine, Session, SQLModel, select
 from pathlib import Path
 from typing import Annotated
+from uuid import UUID, uuid4
 
 from .models import Todo, TodoPublic, TodoCreate, TodoUpdate
 
@@ -53,7 +54,7 @@ app.add_middleware(
 
 @app.get("/", tags=["root"])
 async def read_root() -> dict:
-    return {'"message": "Welcome to your todo list."'}
+    return {"message": "Welcome to your todo list."}
 
 
 # SQL Server Routes
@@ -61,7 +62,7 @@ async def read_root() -> dict:
 def read_sql_todos(session: SessionDep):
     todos = session.exec(select(Todo)).all()
     if not todos:
-        raise HTTPException(status_code=404, message='Todos not found')
+        raise HTTPException(status_code=404, detail='Todos not found')
     return todos
 
 
@@ -75,10 +76,10 @@ def create_sql_todo(session: SessionDep, todo_create: TodoCreate):
 
 
 @app.put('/sql/todo/{id}', response_model=TodoPublic)
-def update_sql_todo(id: int, todo_update: TodoUpdate, session: SessionDep):
+def update_sql_todo(id: UUID | str, todo_update: TodoUpdate, session: SessionDep):
     todo_db = session.get(Todo, id)
     if not todo_db:
-        raise HTTPException(status_code=404, message='Todo not found')
+        raise HTTPException(status_code=404, detail='Todo not found')
     todo_data = todo_update.model_dump(exclude_unset=True)
     todo_db.sqlmodel_update(todo_data)
     session.add(todo_db)
@@ -88,17 +89,17 @@ def update_sql_todo(id: int, todo_update: TodoUpdate, session: SessionDep):
 
 
 @app.delete('/sql/todo/{id}')
-def delete_sql_todo(id: int, session: SessionDep):
+def delete_sql_todo(id: UUID | str, session: SessionDep):
     todo = session.get(Todo, id)
     if not todo:
-        raise HTTPException(status_code=404, message='Todo not found')
+        raise HTTPException(status_code=404, detail='Todo not found')
     session.delete(todo)
     session.commit()
     return {'ok': True}
 
 
 # Local Dict routes
-@app.get('/todo', tags=['todos'])
+""" @app.get('/todo', tags=['todos'])
 async def read_todos() -> dict:
     return {"data": todos}
 
@@ -134,4 +135,4 @@ async def delete_todo(id: int) -> dict:
 
     return {
         "data": f"Todo with id {id} not found."
-    }
+    } """
