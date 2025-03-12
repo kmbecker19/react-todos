@@ -12,7 +12,7 @@ DateStr = Annotated[str, Query(pattern=date_pattern)]
 class TodoBase(SQLModel):
     item: str | None = Field(index=True, default=None, unique=True)
     due_date: DateStr | None = Field(index=True, default=None)
-    priority: Annotated[int, Query(ge=1, le=3)] = Field(index=True, default=None)
+    priority: Annotated[int, Query(ge=1, le=3)] | None = Field(index=True, default=None)
 
 
 class Todo(TodoBase, table=True):
@@ -31,3 +31,4 @@ class TodoCreate(TodoBase):
 class TodoUpdate(TodoBase):
     item: str | None = None
     due_date: DateStr | None = None
+    priority: Annotated[int, Query(ge=1, le=3)] | None = None
