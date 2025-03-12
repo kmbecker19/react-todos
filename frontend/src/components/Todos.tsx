@@ -140,6 +140,7 @@ function AddTodo() {
       },
       body: JSON.stringify(newTodo)
     }).then(fetchTodos);
+    setItem("")
   };
   return (
     <form onSubmit={handleSubmit}>
@@ -148,6 +149,7 @@ function AddTodo() {
         type="text"
         placeholder="Add a todo item"
         aria-label="Add a todo item"
+        value={item}
         onChange={handleInput}
       />
     </form>
