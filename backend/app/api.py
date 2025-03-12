@@ -99,7 +99,7 @@ def delete_sql_todo(id: UUID | str, session: SessionDep):
 
 
 # Local Dict routes
-""" @app.get('/todo', tags=['todos'])
+@app.get('/todo', tags=['todos'])
 async def read_todos() -> dict:
     return {"data": todos}
 
@@ -135,4 +135,4 @@ async def delete_todo(id: int) -> dict:
 
     return {
         "data": f"Todo with id {id} not found."
-    } """
+    }
