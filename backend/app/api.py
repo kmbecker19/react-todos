@@ -87,6 +87,16 @@ def update_sql_todo(id: int, todo_update: TodoUpdate, session: SessionDep):
     return todo_db
 
 
+@app.delete('/sql/todo/{id}')
+def delete_sql_todo(id: int, session: SessionDep):
+    todo = session.get(Todo, id)
+    if not todo:
+        raise HTTPException(status_code=404, message='Todo not found')
+    session.delete(todo)
+    session.commit()
+    return {'ok': True}
+
+
 # Local Dict routes
 @app.get('/todo', tags=['todos'])
 async def read_todos() -> dict:
