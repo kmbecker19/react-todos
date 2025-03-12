@@ -50,8 +50,14 @@ app.add_middleware(
 @app.get('/sql/todo', response_model=list[TodoPublic])
 def read_sql_todos(session: SessionDep,
                    offset: int = 0,
-                   limit: Annotated[int, Query(le=100)] = 100):
-    todos = session.exec(select(Todo).offset(offset).limit(limit)).all()
+                   limit: Annotated[int, Query(le=100)] = 100,
+                   sort: Annotated[str, Query(pattern='^(default|date|priority)$')] = 'default'):
+    query = select(Todo).offset(offset).limit(limit)
+    if sort == 'priority':
+        query = query.order_by(Todo.priority.desc())
+    elif sort == 'date':
+        query = query.order_by(Todo.due_date)
+    todos = session.exec(query).all()
     return todos
 
 
