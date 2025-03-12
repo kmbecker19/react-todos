@@ -29,6 +29,15 @@ interface UpdateTodoProps {
     fetchTodos: () => void;
 }
 
+interface TodoHelperProps {
+    item: string;
+    id: string;
+    fetchTodos: () => void;
+}
+
+// Helper for rendering todos
+
+
 // Context for managing global state across components
 const TodosContext = createContext({
     todos: [], fetchTodos: () => { }
@@ -126,6 +135,21 @@ function AddTodo() {
     );
 }
 
+function TodoHelper({ item, id, fetchTodos }: TodoHelperProps) {
+  return (
+      <Box p={1} shadow="sm">
+          <Flex justify="space-between">
+              <Text mt={4} as="div">
+                  {item}
+                  <Flex align="end">
+                      <UpdateTodo item={item} id={id} fetchTodos={fetchTodos} />
+                  </Flex>
+              </Text>
+          </Flex>
+      </Box>
+  );
+}
+
 // Todos Component
 export default function Todos() {
     const [todos, setTodos] = useState([]);
@@ -146,7 +170,7 @@ export default function Todos() {
                 <AddTodo />
                 <Stack gap={5}>
                     {todos.map((todo: Todo) => (
-                        <b key={todo.id}>{todo.item}</b>
+                        <TodoHelper id={todo.id} item={todo.item} fetchTodos={fetchTodos} />
                     ))}
                 </Stack>
             </Container>
