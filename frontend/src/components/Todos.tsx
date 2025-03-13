@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
   Stack,
+  HStack,
   Text,
   DialogActionTrigger,
   SelectRoot,
@@ -20,7 +21,6 @@ import {
   SelectValueText,
   SelectContent,
   SelectItem,
-  SelectLabel,
   createListCollection,
   SelectValueChangeDetails,
 } from "@chakra-ui/react";
@@ -92,8 +92,7 @@ function SelectPriority({ setPriority }: SelectPriorityProps) {
   };
 
   return (
-    <SelectRoot collection={priorities} size="sm" onValueChange={handleChange}>
-      <SelectLabel>Priority</SelectLabel>
+    <SelectRoot collection={priorities} size="sm" maxW="200px" onValueChange={handleChange}>
       <SelectTrigger>
         <SelectValueText placeholder="Priority" />
       </SelectTrigger>
@@ -191,16 +190,18 @@ function AddTodo() {
   };
   return (
     <form onSubmit={handleSubmit}>
-      <Input
-        pr="4.5rem"
-        type="text"
-        placeholder="Add a todo item"
-        aria-label="Add a todo item"
-        value={item}
-        onChange={handleInput}
-      />
-      <SelectPriority setPriority={setPriority}/>
-      <Button type="submit" >Add Item</Button>
+      <HStack align="top">
+        <Input
+          pr="4.5rem"
+          type="text"
+          placeholder="Add a todo item"
+          aria-label="Add a todo item"
+          value={item}
+          onChange={handleInput}
+        />
+        <SelectPriority setPriority={setPriority} />
+        <Button type="submit" >Add Item</Button>
+      </HStack>
     </form>
   );
 }
