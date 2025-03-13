@@ -205,14 +205,14 @@ function AddTodo() {
   );
 }
 
-function TodoHelper({ item, id, fetchTodos }: TodoHelperProps) {
+function TodoHelper({ item, id, priority, fetchTodos }: TodoHelperProps) {
   return (
     <Box p={1} shadow="sm">
       <Flex justify="space-between">
         <Text mt={4} as="div">
           {item}
           <Flex align="end">
-            <UpdateTodo item={item} id={id} fetchTodos={fetchTodos} />
+            <UpdateTodo item={item} id={id} priority={priority} fetchTodos={fetchTodos} />
             <DeleteTodo id={id} fetchTodos={fetchTodos} />
           </Flex>
         </Text>
@@ -241,7 +241,7 @@ export default function Todos() {
         <AddTodo />
         <Stack gap={5}>
           {todos.map((todo: Todo) => (
-            <TodoHelper id={todo.id} item={todo.item} fetchTodos={fetchTodos} />
+            <TodoHelper id={todo.id} item={todo.item} priority={todo.priority} fetchTodos={fetchTodos} />
           ))}
         </Stack>
       </Container>
