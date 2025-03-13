@@ -82,19 +82,29 @@ const priorities = createListCollection({
 });
 
 interface SelectPriorityProps {
+  priority: number;
   setPriority: (p: number) => void;
 }
 
-// TODO: fix logic for changing prirority number
-function SelectPriority({ setPriority }: SelectPriorityProps) {
+function SelectPriority({ priority, setPriority }: SelectPriorityProps) {
   const handleChange = (details: SelectValueChangeDetails) => {
     setPriority(parseInt(details.value[0]));
   };
 
+  // Get priority label if available
+  const currentPriorityLabel = priorities.items.find(p => p.value == priority)?.label;
   return (
-    <SelectRoot collection={priorities} size="sm" maxW="200px" onValueChange={handleChange}>
+    <SelectRoot 
+      collection={priorities} 
+      size="sm" 
+      maxW="200px" 
+      onValueChange={handleChange}
+      defaultValue={priority ? [priority.toString()] : undefined} 
+    >
       <SelectTrigger>
-        <SelectValueText placeholder="Priority" />
+        <SelectValueText 
+          placeholder={currentPriorityLabel || "Priority" } 
+        />
       </SelectTrigger>
       <SelectContent>
         {priorities.items.map((p) => (
@@ -107,15 +117,17 @@ function SelectPriority({ setPriority }: SelectPriorityProps) {
   );
 }
 
-function UpdateTodo({ item, id, fetchTodos }: UpdateTodoProps) {
+function UpdateTodo({ item, id, priority, fetchTodos }: UpdateTodoProps) {
   const [todo, setTodo] = useState(item);
+  const [newPriority, setPriority] = useState(priority);
+
   const updateTodo = async () => {
     await fetch(`http://localhost:8000/sql/todo/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ item: todo })
+      body: JSON.stringify({ item: todo, priority: newPriority })
     });
     await fetchTodos();
   };
@@ -151,6 +163,7 @@ function UpdateTodo({ item, id, fetchTodos }: UpdateTodoProps) {
             value={todo}
             onChange={event => setTodo(event.target.value)}
           />
+          <SelectPriority priority={newPriority} setPriority={setPriority} />
         </DialogBody>
         <DialogFooter>
           <DialogActionTrigger asChild>
@@ -199,7 +212,7 @@ function AddTodo() {
           value={item}
           onChange={handleInput}
         />
-        <SelectPriority setPriority={setPriority} />
+        <SelectPriority priority={priority} setPriority={setPriority} />
         <Button type="submit" >Add Item</Button>
       </HStack>
     </form>
