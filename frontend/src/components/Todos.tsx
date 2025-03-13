@@ -29,17 +29,20 @@ import {
 interface Todo {
   id: string;
   item: string;
+  priority: number;
 }
 
 interface UpdateTodoProps {
   item: string;
   id: string;
+  priority: number;
   fetchTodos: () => void;
 }
 
 interface TodoHelperProps {
   item: string;
   id: string;
+  priority: number;
   fetchTodos: () => void;
 }
 
@@ -68,6 +71,41 @@ function DeleteTodo({ id, fetchTodos }: DeleteTodoProps) {
   return (
     <Button h="1.5rem" size="sm" marginLeft={2} onClick={deleteTodo}>Delete Todo</Button>
   )
+}
+
+const priorities = createListCollection({
+  items: [
+    { label: "High", value: 3 },
+    { label: "Medium", value: 2 },
+    { label: "Low", value: 1 },
+  ],
+});
+
+interface SelectPriorityProps {
+  setPriority: (p: number) => void;
+}
+
+// TODO: fix logic for changing prirority number
+function SelectPriority({ setPriority }: SelectPriorityProps) {
+  const handleChange = (details: SelectValueChangeDetails) => {
+    setPriority(parseInt(details.value[0]));
+  };
+
+  return (
+    <SelectRoot collection={priorities} size="sm" onValueChange={handleChange}>
+      <SelectLabel>Priority</SelectLabel>
+      <SelectTrigger>
+        <SelectValueText placeholder="Priority" />
+      </SelectTrigger>
+      <SelectContent>
+        {priorities.items.map((p) => (
+          <SelectItem item={p} key={p.value}>
+            <Text color="black">{p.label}</Text>
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </SelectRoot>
+  );
 }
 
 function UpdateTodo({ item, id, fetchTodos }: UpdateTodoProps) {
@@ -123,41 +161,6 @@ function UpdateTodo({ item, id, fetchTodos }: UpdateTodoProps) {
         </DialogFooter>
       </DialogContent>
     </DialogRoot>
-  );
-}
-
-const priorities = createListCollection({
-  items: [
-    { label: "High", value: 3 },
-    { label: "Medium", value: 2 },
-    { label: "Low", value: 1 },
-  ],
-});
-
-interface SelectPriorityProps {
-  setPriority: (p: number) => void;
-}
-
-// TODO: fix logic for changing prirority number
-function SelectPriority({ setPriority }: SelectPriorityProps) {
-  const handleChange = (details: SelectValueChangeDetails) => {
-    setPriority(parseInt(details.value[0]));
-  };
-
-  return (
-    <SelectRoot collection={priorities} size="sm" onValueChange={handleChange}>
-      <SelectLabel>Priority</SelectLabel>
-      <SelectTrigger>
-        <SelectValueText placeholder="Priority" />
-      </SelectTrigger>
-      <SelectContent>
-        {priorities.items.map((p) => (
-          <SelectItem item={p} key={p.value}>
-            <Text color="black">{p.label}</Text>
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </SelectRoot>
   );
 }
 
