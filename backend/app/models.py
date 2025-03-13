@@ -13,6 +13,7 @@ class TodoBase(SQLModel):
     item: str | None = Field(index=True, default=None, unique=True)
     due_date: DateStr | None = Field(index=True, default=None)
     priority: Annotated[int, Query(ge=1, le=3)] | None = Field(index=True, default=None)
+    completed: bool = Field(index=True, default=False)
 
 
 class Todo(TodoBase, table=True):
@@ -32,3 +33,4 @@ class TodoUpdate(TodoBase):
     item: str | None = None
     due_date: DateStr | None = None
     priority: Annotated[int, Query(ge=1, le=3)] | None = None
+    completed: bool | None = None

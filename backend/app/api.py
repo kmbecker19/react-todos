@@ -51,8 +51,13 @@ app.add_middleware(
 def read_sql_todos(session: SessionDep,
                    offset: int = 0,
                    limit: Annotated[int, Query(le=100)] = 100,
-                   sort: Annotated[str, Query(pattern='^(default|date|priority)$')] = 'default'):
+                   sort: Annotated[str, Query(pattern='^(default|date|priority)$')] = 'default',
+                   filter: Annotated[str | None, Query(pattern='^(in)?complete$')] = None):
     query = select(Todo).offset(offset).limit(limit)
+    if filter == 'complete':
+        query = query.filter(Todo.completed == True)
+    elif filter == 'incomplete':
+        query = query.filter(Todo.completed == False)
     if sort == 'priority':
         query = query.order_by(Todo.priority.desc())
     elif sort == 'date':
