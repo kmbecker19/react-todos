@@ -10,7 +10,7 @@ from .models import Todo, TodoPublic, TodoCreate, TodoUpdate
 
 
 # Set up SQL Engine
-db_path = Path().absolute() / 'todos.db'
+db_path = Path().absolute() / 'backend' / 'todos.db'
 sqlite_url = f'sqlite:///{db_path}'
 connect_args = {'check_same_thread': False}
 engine = create_engine(sqlite_url, echo=True, connect_args=connect_args)
@@ -20,6 +20,7 @@ engine = create_engine(sqlite_url, echo=True, connect_args=connect_args)
 async def lifespan(app: FastAPI):
     SQLModel.metadata.create_all(engine)
     yield
+    SQLModel.metadata.drop_all(engine)
 
 app = FastAPI(lifespan=lifespan)
 
