@@ -22,6 +22,7 @@ import {
   SelectItem,
   SelectLabel,
   createListCollection,
+  SelectValueChangeDetails,
 } from "@chakra-ui/react";
 
 // Todo interface
@@ -137,13 +138,14 @@ interface SelectPriorityProps {
   setPriority: (p: number) => void;
 }
 
+// TODO: fix logic for changing prirority number
 function SelectPriority({ setPriority }: SelectPriorityProps) {
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPriority(parseInt(event.target.value));
+  const handleChange = (details: SelectValueChangeDetails) => {
+    setPriority(parseInt(details.value[0]));
   };
 
   return (
-    <SelectRoot collection={priorities} size="sm" onChange={handleChange}>
+    <SelectRoot collection={priorities} size="sm" onValueChange={handleChange}>
       <SelectLabel>Priority</SelectLabel>
       <SelectTrigger>
         <SelectValueText placeholder="Priority" />
