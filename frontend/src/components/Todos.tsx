@@ -152,6 +152,7 @@ function AddTodo() {
         value={item}
         onChange={handleInput}
       />
+      <Button type="submit" >Add Item</Button>
     </form>
   );
 }
