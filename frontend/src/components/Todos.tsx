@@ -15,6 +15,13 @@ import {
   Stack,
   Text,
   DialogActionTrigger,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+  SelectContent,
+  SelectItem,
+  SelectLabel,
+  createListCollection,
 } from "@chakra-ui/react";
 
 // Todo interface
@@ -118,10 +125,45 @@ function UpdateTodo({ item, id, fetchTodos }: UpdateTodoProps) {
   );
 }
 
+const priorities = createListCollection({
+  items: [
+    { label: "High", value: 3 },
+    { label: "Medium", value: 2 },
+    { label: "Low", value: 1 },
+  ],
+});
+
+interface SelectPriorityProps {
+  setPriority: (p: number) => void;
+}
+
+function SelectPriority({ setPriority }: SelectPriorityProps) {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPriority(parseInt(event.target.value));
+  };
+
+  return (
+    <SelectRoot collection={priorities} size="sm" onChange={handleChange}>
+      <SelectLabel>Priority</SelectLabel>
+      <SelectTrigger>
+        <SelectValueText placeholder="Priority" />
+      </SelectTrigger>
+      <SelectContent>
+        {priorities.items.map((p) => (
+          <SelectItem item={p} key={p.value}>
+            <Text color="black">{p.label}</Text>
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </SelectRoot>
+  );
+}
+
 // Shell for adding todo
 function AddTodo() {
   const [item, setItem] = useState("");
   const { todos, fetchTodos } = useContext(TodosContext);
+  const [priority, setPriority] = useState(0);
 
   // Form handling functions
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,8 +172,8 @@ function AddTodo() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const newTodo = {
-      "id": todos.length + 1,
-      "item": item
+      "item": item,
+      "priority": priority ? priority : undefined,
     };
     fetch("http://localhost:8000/sql/todo", {
       method: "POST",
@@ -152,6 +194,7 @@ function AddTodo() {
         value={item}
         onChange={handleInput}
       />
+      <SelectPriority setPriority={setPriority}/>
       <Button type="submit" >Add Item</Button>
     </form>
   );
