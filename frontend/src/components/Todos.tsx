@@ -23,6 +23,7 @@ import {
   SelectItem,
   createListCollection,
   SelectValueChangeDetails,
+  CheckboxCheckedChangeDetails,
   Separator,
   Checkbox,
 } from "@chakra-ui/react";
@@ -231,24 +232,25 @@ function AddTodo() {
 
 function CompletedCheckbox({ item, id, completed, fetchTodos }: CompleteTaskProps) {
   const [checked, setChecked] = useState(completed);
-  const updateTodo = async () => {
+  const updateTodo = async (checkedState: boolean) => {
     await fetch(`http://localhost:8000/sql/todo/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ completed: checked })
+      body: JSON.stringify({ completed: checkedState })
     });
     await fetchTodos();
   }
-  const handleToggle = (e: React.FormEvent<HTMLLabelElement>) => {
-    setChecked(!checked);
-    updateTodo();
+  const handleToggle = (e: CheckboxCheckedChangeDetails) => {
+    const newCheckedState = !!e.checked;
+    setChecked(newCheckedState);
+    updateTodo(newCheckedState);
   };
   return (
     <Checkbox.Root
       defaultChecked={checked}
-      onChange={handleToggle}
+      onCheckedChange={handleToggle}
     >
       <Checkbox.HiddenInput />
       <Checkbox.Control />
@@ -294,9 +296,9 @@ export default function Todos() {
           <AddTodo />
           <Stack gap={5}>
             <Flex justify="left">
-              <Text as="h1" fontSize="20pt">{todos.length > 0 && "Todos:"}</Text>
+              <Text as="h1" fontSize="20pt">{!!todos.length && "Todos:"}</Text>
             </Flex>
-            {todos.length > 0 && <Separator />}
+            {!!todos.length && <Separator />}
             {todos.map((todo: Todo) => (
               <>
                 <TodoHelper id={todo.id} item={todo.item} priority={todo.priority} completed={todo.completed} fetchTodos={fetchTodos} />
