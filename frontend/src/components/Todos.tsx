@@ -24,6 +24,7 @@ import {
   createListCollection,
   SelectValueChangeDetails,
   Separator,
+  Checkbox,
 } from "@chakra-ui/react";
 
 // Todo interface
@@ -224,13 +225,17 @@ function TodoHelper({ item, id, priority, fetchTodos }: TodoHelperProps) {
   return (
     <Box p={1} shadow="sm">
       <Flex justify="space-between">
-        <Text mt={4} as="div">
-          {item}
-          <Flex align="end">
+        <Flex mt={4} as="div">
+          <Checkbox.Root>
+            <Checkbox.HiddenInput />
+            <Checkbox.Control />
+            <Checkbox.Label>{item}</Checkbox.Label>
+          </Checkbox.Root>
+          <Flex align="center" justify="right" ml={500}>
             <UpdateTodo item={item} id={id} priority={priority} fetchTodos={fetchTodos} />
             <DeleteTodo id={id} fetchTodos={fetchTodos} />
           </Flex>
-        </Text>
+        </Flex>
       </Flex>
     </Box>
   );
