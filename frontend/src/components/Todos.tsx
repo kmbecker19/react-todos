@@ -294,12 +294,24 @@ export default function Todos() {
       <Container maxW="container.xl" pt="100px">
         <Stack gap={5}>
           <AddTodo />
-          <Stack gap={5}>
+          <Stack gap={5} mt={10}>
             <Flex justify="left">
               <Text as="h1" fontSize="20pt">{!!todos.length && "Todos:"}</Text>
             </Flex>
             {!!todos.length && <Separator />}
-            {todos.map((todo: Todo) => (
+            {todos.filter((todo: Todo) => !todo.completed).map((todo: Todo) => (
+              <>
+                <TodoHelper id={todo.id} item={todo.item} priority={todo.priority} completed={todo.completed} fetchTodos={fetchTodos} />
+                <Separator />
+              </>
+            ))}
+          </Stack>
+          <Stack gap={5} mt={20}>
+            <Flex justify="left">
+              <Text as="h1" fontSize="20pt">{!!todos.length && "Completed Todos:"}</Text>
+            </Flex>
+            {!!todos.length && <Separator />}
+            {todos.filter((todo: Todo) => todo.completed).map((todo: Todo) => (
               <>
                 <TodoHelper id={todo.id} item={todo.item} priority={todo.priority} completed={todo.completed} fetchTodos={fetchTodos} />
                 <Separator />
