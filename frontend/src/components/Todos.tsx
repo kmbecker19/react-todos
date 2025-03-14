@@ -249,8 +249,9 @@ function CompletedCheckbox({ item, id, completed, fetchTodos }: CompleteTaskProp
   };
   return (
     <Checkbox.Root
-      defaultChecked={checked}
+      defaultChecked={completed}
       onCheckedChange={handleToggle}
+      key={id}
     >
       <Checkbox.HiddenInput />
       <Checkbox.Control />
