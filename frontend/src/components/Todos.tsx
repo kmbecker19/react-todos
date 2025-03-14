@@ -23,6 +23,7 @@ import {
   SelectItem,
   createListCollection,
   SelectValueChangeDetails,
+  Separator,
 } from "@chakra-ui/react";
 
 // Todo interface
@@ -252,11 +253,20 @@ export default function Todos() {
   return (
     <TodosContext.Provider value={{ todos, fetchTodos }}>
       <Container maxW="container.xl" pt="100px">
-        <AddTodo />
         <Stack gap={5}>
-          {todos.map((todo: Todo) => (
-            <TodoHelper id={todo.id} item={todo.item} priority={todo.priority} fetchTodos={fetchTodos} />
-          ))}
+          <AddTodo />
+          <Stack gap={5}>
+            <Flex justify="left">
+              <Text as="h1" fontSize="20pt">{todos.length > 0 && "Todos:"}</Text>
+            </Flex>
+            {todos.length > 0 && <Separator />}
+            {todos.map((todo: Todo) => (
+              <>
+                <TodoHelper id={todo.id} item={todo.item} priority={todo.priority} fetchTodos={fetchTodos} />
+                <Separator />
+              </>
+            ))}
+          </Stack>
         </Stack>
       </Container>
     </TodosContext.Provider>
