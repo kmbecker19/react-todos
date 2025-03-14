@@ -32,6 +32,7 @@ interface Todo {
   id: string;
   item: string;
   priority: number;
+  completed: boolean;
 }
 
 interface UpdateTodoProps {
@@ -45,6 +46,7 @@ interface TodoHelperProps {
   item: string;
   id: string;
   priority: number;
+  completed: boolean;
   fetchTodos: () => void;
 }
 
@@ -53,6 +55,12 @@ interface DeleteTodoProps {
   fetchTodos: () => void;
 }
 
+interface CompleteTaskProps {
+  item: string;
+  id: string;
+  completed: boolean;
+  fetchTodos: () => void;
+}
 // Context for managing global state across components
 const TodosContext = createContext({
   todos: [], fetchTodos: () => { }
@@ -221,16 +229,40 @@ function AddTodo() {
   );
 }
 
-function TodoHelper({ item, id, priority, fetchTodos }: TodoHelperProps) {
+function CompletedCheckbox({ item, id, completed, fetchTodos }: CompleteTaskProps) {
+  const [checked, setChecked] = useState(completed);
+  const updateTodo = async () => {
+    await fetch(`http://localhost:8000/sql/todo/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ completed: checked })
+    });
+    await fetchTodos();
+  }
+  const handleToggle = (e: React.FormEvent<HTMLLabelElement>) => {
+    setChecked(!checked);
+    updateTodo();
+  };
+  return (
+    <Checkbox.Root
+      defaultChecked={checked}
+      onChange={handleToggle}
+    >
+      <Checkbox.HiddenInput />
+      <Checkbox.Control />
+      <Checkbox.Label>{item}</Checkbox.Label>
+    </Checkbox.Root>
+  );
+}
+
+function TodoHelper({ item, id, priority, completed, fetchTodos }: TodoHelperProps) {
   return (
     <Box p={1} shadow="sm">
       <Flex justify="space-between">
         <Flex mt={4} as="div">
-          <Checkbox.Root>
-            <Checkbox.HiddenInput />
-            <Checkbox.Control />
-            <Checkbox.Label>{item}</Checkbox.Label>
-          </Checkbox.Root>
+          <CompletedCheckbox item={item} id={id} completed={completed} fetchTodos={fetchTodos} />
           <Flex align="center" justify="right" ml={500}>
             <UpdateTodo item={item} id={id} priority={priority} fetchTodos={fetchTodos} />
             <DeleteTodo id={id} fetchTodos={fetchTodos} />
@@ -267,7 +299,7 @@ export default function Todos() {
             {todos.length > 0 && <Separator />}
             {todos.map((todo: Todo) => (
               <>
-                <TodoHelper id={todo.id} item={todo.item} priority={todo.priority} fetchTodos={fetchTodos} />
+                <TodoHelper id={todo.id} item={todo.item} priority={todo.priority} completed={todo.completed} fetchTodos={fetchTodos} />
                 <Separator />
               </>
             ))}
