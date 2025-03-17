@@ -8,6 +8,15 @@ function TodoButton() {
     </Button>
   )
 }
+
+function CreateUserButton() {
+  return (
+    <Button asChild size="xl">
+      <a href="/create-user">Create a New User</a>
+    </Button>
+  )
+}
+
 export default function HomePage() {
   return (
     <ChakraProvider value={defaultSystem}>
@@ -16,8 +25,9 @@ export default function HomePage() {
         <Flex as="nav" justify="center" margin="20">
           <Heading as="h1" size="md">Welcome to the Home Page!</Heading>
         </Flex>
-        <Flex justify="center" align="center" margin="20">
+        <Flex justify="center" align="center" margin="20" gap={5}>
           <TodoButton />
+          <CreateUserButton />
         </Flex>
       </Container>
     </ChakraProvider>
