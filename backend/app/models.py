@@ -3,15 +3,22 @@ from uuid import UUID, uuid4
 from typing import Annotated, List
 from fastapi import Query
 
+# Usernames should be alphanumeric with underscores or dashes
+username_pattern = r'^[a-zA-Z0-9_\-]+$'
+# Passwords should be 3+ alphanumeric characters
+password_pattern = r'^[a-zA-Z0-9_\-]{3,}$'
+
+Username = Annotated[str, Query(pattern=username_pattern)]
+Password = Annotated[str, Query(pattern=password_pattern)]
 
 # User Models
 class UserBase(SQLModel):
-    username: str = Field(index=True)
+    username: Username = Field(index=True, unique=True)
 
 
 class User(UserBase, table=True):
     id: str = Field(primary_key=True, default_factory=lambda: str(uuid4()))
-    password: str
+    password: Password
 
     todos: List['Todo'] = Relationship(back_populates='user')
 
@@ -21,12 +28,12 @@ class UserPublic(UserBase):
 
 
 class UserCreate(UserBase):
-    password: str
+    password: Password
 
 
 class UserUpdate(UserBase):
-    username: str | None = None
-    password: str | None = None
+    username: Username | None = None
+    password: Password | None = None
 
 
 # Force Dates to fit YYYY-MM-DD format
