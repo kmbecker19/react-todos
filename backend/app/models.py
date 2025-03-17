@@ -43,13 +43,13 @@ class UserBase(SQLModel):
 
 class User(UserBase, table=True):
     id: str = Field(primary_key=True, default_factory=lambda: str(uuid4()))
-    hashed_password: str
+    password: str
 
 
 class UserPublic(UserBase):
     id: str
 
-    
+
 class UserCreate(UserBase):
     password: str
 

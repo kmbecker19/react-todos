@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Annotated
 from uuid import UUID, uuid4
 
-from .models import Todo, TodoPublic, TodoCreate, TodoUpdate
+from .models import Todo, TodoPublic, TodoCreate, TodoUpdate, User, UserPublic, UserCreate
 
 
 # Set up SQL Engine
@@ -97,3 +97,19 @@ def delete_sql_todo(id: UUID | str, session: SessionDep):
     session.delete(todo)
     session.commit()
     return {'ok': True}
+
+
+# User Routes
+@app.get('/auth/users', tags=['auth'], response_model=list[UserPublic])
+def read_users(session: SessionDep):
+    users = session.exec(select(User)).all()
+    return users
+
+
+@app.post('/auth/users', tags=['auth'], response_model=UserPublic)
+def create_user(session: SessionDep, user_create: UserCreate):
+    user_db = User.model_validate(user_create)
+    session.add(user_db)
+    session.commit()
+    session.refresh(user_db)
+    return user_db
