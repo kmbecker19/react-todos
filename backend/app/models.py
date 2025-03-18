@@ -25,7 +25,6 @@ class User(UserBase, table=True):
 
 class UserPublic(UserBase):
     id: str
-    hashed_password: str
 
 
 class UserCreate(UserBase):
