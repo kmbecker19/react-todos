@@ -18,13 +18,14 @@ class UserBase(SQLModel):
 
 class User(UserBase, table=True):
     id: str = Field(primary_key=True, default_factory=lambda: str(uuid4()))
-    password: Password
+    hashed_password: str = Field()
 
     todos: List['Todo'] = Relationship(back_populates='user')
 
 
 class UserPublic(UserBase):
     id: str
+    hashed_password: str
 
 
 class UserCreate(UserBase):

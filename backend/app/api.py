@@ -7,14 +7,8 @@ from typing import Annotated
 from uuid import UUID, uuid4
 
 from .models import Todo, TodoPublic, TodoCreate, TodoUpdate, User, UserPublic, UserCreate
-
-
-# Set up SQL Engine
-db_path = Path().absolute() / 'backend' / 'todos.db'
-sqlite_url = f'sqlite:///{db_path}'
-connect_args = {'check_same_thread': False}
-engine = create_engine(sqlite_url, echo=True, connect_args=connect_args)
-
+from .auth import get_password_hash, verify_password, authenticate_user
+from .engine import engine, SessionDep
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -24,14 +18,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-
-def get_session():
-    with Session(engine) as session:
-        yield session
-
-
-# Session Dependency
-SessionDep = Annotated[Session, Depends(get_session)]
 
 origins = [
     "http://localhost:5173",
@@ -108,7 +94,9 @@ def read_users(session: SessionDep):
 
 @app.post('/auth/users', tags=['auth'], response_model=UserPublic)
 def create_user(session: SessionDep, user_create: UserCreate):
-    user_db = User.model_validate(user_create)
+    hashed_password = get_password_hash(user_create.password)
+    extra_data = {'hashed_password': hashed_password}
+    user_db = User.model_validate(user_create, update=extra_data)
     session.add(user_db)
     session.commit()
     session.refresh(user_db)
