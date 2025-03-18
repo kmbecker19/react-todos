@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordRequestForm
 from contextlib import asynccontextmanager
 from sqlmodel import create_engine, Session, SQLModel, select
 from pathlib import Path
@@ -101,3 +102,11 @@ def create_user(session: SessionDep, user_create: UserCreate):
     session.commit()
     session.refresh(user_db)
     return user_db
+
+
+@app.post('/auth/token', tags=['auth'])
+def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], session: SessionDep):
+    user = authenticate_user(form_data.username, form_data.password, session)
+    if not user:
+        raise HTTPException(status_code=400, detail='Incorrect username or password')
+    return {'access_token': user.username, 'token_type': 'bearer'}
